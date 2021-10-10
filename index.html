@@ -9,8 +9,8 @@
   </head>
   <body>
     <form id="password-form">
-      <div id="password-error">INVALID PASSWORD</div>
-      <input type="password" id="password" placeholder="Password"><br>
+      <div id="password-error">INVALID PASSWORD</div><br>
+      <input type="password" id="password" placeholder="Password"><br><br>
       <input id="submit-button"type="button" value="Submit">
     </form>
     <div id="unity-container" class="unity-desktop">
@@ -25,9 +25,7 @@
         WebGL builds are not supported on mobile devices.
       </div>
       <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
         <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">labyrinth</div>
       </div>
     </div>
     <script>
@@ -108,9 +106,6 @@
           passwordError.style.visibility = "visible";
         }
       });
-    //   submitButton.addEventListener("click", function() {
-    //     submitButton.disabled = true;
-    // });
     document.body.appendChild(script);
     </script>
   </body>
