@@ -104,6 +104,9 @@
           });
         } else {
           passwordError.style.visibility = "visible";
+          setTimeout(() => {
+            passwordError.style.visibility = "hidden";
+          }, 3000);
         }
       });
     document.body.appendChild(script);
