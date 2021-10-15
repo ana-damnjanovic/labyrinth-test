@@ -22,11 +22,11 @@ body { padding: 0; margin: 0 }
 }
 #password-error {
     background-color: red;
-    font-size: 20px; 
+    font-size: 1.75em; 
 }
 #password {
-    font-size: 20px;
+    font-size: 1.75em;
 }
 #submit-button{
-    font-size: 20px;
+    font-size: 1.75em;
 }
