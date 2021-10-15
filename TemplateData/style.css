@@ -19,8 +19,14 @@ body { padding: 0; margin: 0 }
     left: 50%;
     transform: translate(-50%,-50%);
     z-index: 10;
-    font-size: 20px; 
 }
 #password-error {
     background-color: red;
+    font-size: 20px; 
+}
+#password {
+    font-size: 20px;
+}
+#submit-button{
+    font-size: 20px;
 }
