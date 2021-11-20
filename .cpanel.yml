@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/citidzns/minotaur.citizenship.sbs/
+    - /bin/cp -r * $DEPLOYPATH
+    
