@@ -3,32 +3,39 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | labyrinth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>labyrinth</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
-  <body>
+  <body class="dark">
     <form id="password-form">
       <div id="password-error">INVALID PASSWORD</div><br>
-      <input type="password" id="password" placeholder="Password"><br><br>
-      <input id="submit-button"type="button" value="Submit">
+      <div id="password-input">
+        <input type="password" id="password" placeholder="Password"><br><br>
+      </div>
+      <div id="password-button">
+        <input id="submit-button"type="button" value="Submit">
+      </div>
     </form>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600></canvas> 
+      <canvas id="unity-canvas"></canvas>
+    </div>
+    <div id="loading-cover" style="display:none;">
       <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
+        <!-- <div id="unity-logo"><img src="logo.png"></div> -->
+        <div id="unity-progress-bar-empty" style="display: none;">
           <div id="unity-progress-bar-full"></div>
         </div>
-      </div>
-      <div id="unity-footer">
-        <div id="unity-fullscreen-button"></div>
+        <div class="spinner"></div>
       </div>
     </div>
+    <div id="unity-fullscreen-button" style="display: none;"></div>
     <script>
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/test.loader.js";
-      var config = {
+      const hideFullScreenButton = "";
+      const buildUrl = "Build";
+      const loaderUrl = buildUrl + "/test.loader.js";
+      const config = {
         dataUrl: buildUrl + "/test.data.unityweb",
         frameworkUrl: buildUrl + "/test.framework.js.unityweb",
         codeUrl: buildUrl + "/test.wasm.unityweb",
@@ -49,39 +56,45 @@
           submitButton.click();
         }
       });
-      var container = document.querySelector("#unity-container");
-      container.style.display = "none";
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-      //var mobileWarning = document.querySelector("#unity-mobile-warning");
 
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
+      const container = document.querySelector("#unity-container");
+      container.style.display = "none";
+      const canvas = document.querySelector("#unity-canvas");
+      const loadingCover = document.querySelector("#loading-cover");
+      const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+      const progressBarFull = document.querySelector("#unity-progress-bar-full");
+      const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      const spinner = document.querySelector('.spinner');
+
+      const canFullscreen = (function() {
+        for (const key of [
+            'exitFullscreen',
+            'webkitExitFullscreen',
+            'webkitCancelFullScreen',
+            'mozCancelFullScreen',
+            'msExitFullscreen',
+          ]) {
+          if (key in document) {
+            return true;
+          }
+        }
+        return false;
+      }());
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         container.className = "unity-mobile";
-        // Avoid draining fillrate performance on mobile devices,
-        // and default/override low DPI mode on mobile browsers.
+        passwordForm.className = "password-form-mobile";
+        password.className = "password-mobile";
+        submitButton.className = "submit-button-mobile";
         config.devicePixelRatio = 1;
-        //mobileWarning.style.display = "block";
-        // setTimeout(() => {
-        //   mobileWarning.style.display = "none";
-        // }, 5000);
-      } else {
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
       }
-      loadingBar.style.display = "block";
+      loadingCover.style.display = "";
 
-      var script = document.createElement("script");
+      const script = document.createElement("script");
       script.src = loaderUrl;
-    
+
+      spinner.style.display = "none";
+
       submitButton.addEventListener("click", function() {
         if (password.value == "Daedalus" || password.value == "daedalus"){
           passwordError.style.display = "none";
@@ -91,12 +104,19 @@
           container.style.display = "inline-block";
           createUnityInstance(canvas, config, (progress) => {
             progressBarFull.style.width = 100 * progress + "%";
+            spinner.style.display = "none";
+            progressBarEmpty.style.display = "";
+            progressBarFull.style.width = `${100 * progress}%`;
           }).then((unityInstance) => {
-            loadingBar.style.display = "none";
-            unityInstance.SetFullscreen(1);
-            fullscreenButton.onclick = () => {
-              unityInstance.SetFullscreen(1);
-            };
+              loadingCover.style.display = "none";
+            if (canFullscreen) {
+              if (!hideFullScreenButton) {
+                fullscreenButton.style.display = "";
+              }
+              fullscreenButton.onclick = () => {
+                unityInstance.SetFullscreen(1);
+              };
+            }
           }).catch((message) => {
             alert(message);
           });
@@ -107,7 +127,7 @@
           }, 3000);
         }
       });
-    document.body.appendChild(script);
+      document.body.appendChild(script);
     </script>
   </body>
 </html>
